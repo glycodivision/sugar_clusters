@@ -1,0 +1,12 @@
+TRAJECTORY	=	gal7-ETWAT20-3x20.nc			#  FILE( *.nc or *.binpos)
+TOPOLOGY	=	ali_2gal-B_pfam_apo_HMR.prmtop	#  FILE (*.parm7 or *.prmtop)
+REFERENCE	=	ali2_2gal-B_pfam_box.pdb		#  FILE (*.pdb)
+STEP		=	10 								#  step
+CLUSTER_RADIUS		= 0.6							#  FLOAT
+BINDING_SITE		= resid 44 46 48 55 57 64 67	#  Binding Site (atomselect vmd class)
+SOLVENT				= TRUE								# 
+SOLVENT_THRESHOLD	= 0.1							#  cota inferior armado de preclusters
+COSOLVENT			= ETA							#  atomselect vmd class
+CS_ATOM_PROBE		= O1, H1, C1					#  atomselect vmd class
+COSOLVENT_THRESHOLD	= 0.2							# 
+N_CUT_RATIO			= 0.05							# 	porcentaje de corte para armar los precluster
