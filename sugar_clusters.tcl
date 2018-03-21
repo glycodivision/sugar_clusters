@@ -217,6 +217,24 @@ proc procesar_temporal { temp_pdb } {
 
 ############################# CLUSTERING ################################
 
+#Para el carbono=1,96
+#Para el oxigeno= 1,4
+#Para el hidrogeno=1,0
+
+proc asignar_corte { atom } {
+
+	if { [string first O $atom] } { 
+		return 1.4 
+	} elseif { [string first H $atom] } {
+		return 1
+	} elseif { [string first C $atom] } {
+		return 1.96
+	} else {
+		puts "CORTE : atomo $atom no encontrado, se asigna 0.6 como radio de corte"
+		return 0.6
+	}
+
+}
 
 # borra el elemento $indice de la lista
 proc ldelete { lista indice } {
