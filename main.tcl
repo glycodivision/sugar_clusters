@@ -1,6 +1,10 @@
+foreach src [list solvent.tcl clustering.tcl overlap.tcl parser.tcl] {
+	source $src
+}
+
 ############################# ARGUMENTOS ################################
 
-set dict_parametros [parsear_parametros "parameters.in"]
+set dict_parametros [parser::parsear_parametros "parameters.in"]
 
 set binding_site	[dict get $dict_parametros binding_site]
 
@@ -55,7 +59,7 @@ if { $aguas == "TRUE"} {
 	set lista_pruebas [list $cosolvent_mol_prueba $cosolvent_atoms_probe ]
 }
 puts "llegue a solapamiento"
-solapamiento_dinamica $id_dinamica $id_referencia 1 $binding_site $lista_pruebas
+overlap::solapamiento_dinamica $id_dinamica $id_referencia 1 $binding_site $lista_pruebas
 
 mol delete $id_dinamica
 mol delete $id_referencia
@@ -71,11 +75,11 @@ foreach mol_probe [dict key $lista_pruebas] {
 		puts "overlap pdb : ws/overlap_$mol_probe.$atom.pdb"
 		set overlap_pdb "ws/overlap_$mol_probe.$atom.pdb"
 		
-		set lista_indices_cluster [clusterizar $radio $ncut $overlap_pdb]
+		set lista_indices_cluster [clustering::clusterizar $radio $ncut $overlap_pdb]
 
 		#calcular_parametros_WS { 					indices 			distcut num_frames R90  WFRr id_overlap }
 
-		set solvents_sites [calcular_parametros_SS $lista_indices_cluster $radio $num_frames $R90 $WFRr $overlap_pdb $mol_probe $atom]
+		set solvents_sites [solvent::calcular_parametros_SS $lista_indices_cluster $radio $num_frames $R90 $WFRr $overlap_pdb $mol_probe $atom]
 
 		puts "$solvents_sites"
 

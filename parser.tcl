@@ -1,4 +1,11 @@
-proc parsear_parametros { path_archivo } {
+package provide parser
+
+namespace eval ::parser:: {
+    namespace export parsear_parametros string_op parser 
+}
+
+
+proc ::parser::parsear_parametros { path_archivo } {
 
 	# funcion para parsear el archivo de parametros
 	set dic_argumentos [dict create]
@@ -15,7 +22,7 @@ proc parsear_parametros { path_archivo } {
 	return $dic_argumentos 
 }
 
-proc string_op { palabra } {
+proc ::parser::string_op { palabra } {
 
 
 
@@ -32,7 +39,7 @@ proc string_op { palabra } {
 }
 
 
-proc parser { linea dic_argumentos} {
+proc ::parser::parser { linea dic_argumentos} {
 
 	# toma una linea del archivo de parametros y parsea la linea, devuelve una actualizacion de diccionario
 	puts [string trim [lindex [split $linea "=" ] 0 ] ]
@@ -115,4 +122,3 @@ proc parser { linea dic_argumentos} {
 
 	return $dic_argumentos
 }
-s

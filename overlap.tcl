@@ -1,4 +1,12 @@
-proc solapamiento_dinamica { dinamica referencia salto binding_site mols_probe } {
+
+package provide overlap
+
+namespace eval ::overlap {
+    namespace export solapamiento_dinamica procesar_temporal
+}
+
+
+proc ::overlap::solapamiento_dinamica { dinamica referencia salto binding_site mols_probe } {
 
 	set rmsd_out [open "ws/rmsd_fit.csv" w]
 
@@ -75,7 +83,7 @@ proc solapamiento_dinamica { dinamica referencia salto binding_site mols_probe }
 	return 1
 }
 
-proc procesar_temporal { temp_pdb } {	
+proc ::overlap::procesar_temporal { temp_pdb } {	
 	set temporal [open $temp_pdb r]
 	gets $temporal line
 	set salida {}	

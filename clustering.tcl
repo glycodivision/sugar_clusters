@@ -1,4 +1,11 @@
-proc asignar_corte { atom } {
+package provide clustering 1.0
+
+namespace eval ::clustering {
+    namespace export asignar_corte ldelete clusterizar
+}
+
+
+proc ::clustering::asignar_corte { atom } {
 
 	if { [string first O $atom] } { 
 		return 1.4 
@@ -14,11 +21,11 @@ proc asignar_corte { atom } {
 }
 
 # borra el elemento $indice de la lista
-proc ldelete { lista indice } {
+proc ::clustering::ldelete { lista indice } {
 	return [ concat [ lrange $lista 0 [expr { $indice - 1  } ] ] [ lrange $lista [ expr { $indice + 1  } ] end  ] ] 
 }
 
-proc clusterizar { distcut ncut pdb_overlap } {
+proc ::clustering::clusterizar { distcut ncut pdb_overlap } {
 	
 	
 	
@@ -110,11 +117,3 @@ proc clusterizar { distcut ncut pdb_overlap } {
 
 	return $lista_clusters
 }
-
-
-proc std_salida { archivo } {
-	flush stdout
-	close stdout
-   	open $archivo w
-   	return 1
-}s
