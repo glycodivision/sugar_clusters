@@ -1,5 +1,6 @@
+set dir [lindex $argv 2]
 foreach src [list solvent.tcl clustering.tcl overlap.tcl parser.tcl] {
-	source $src
+	source "$dir/$src"
 }
 
 ############################# ARGUMENTOS ################################
@@ -74,7 +75,7 @@ foreach mol_probe [dict key $lista_pruebas] {
 		puts "mol : $mol_probe, atom: $atom "
 		puts "overlap pdb : ws/overlap_$mol_probe.$atom.pdb"
 		set overlap_pdb "ws/overlap_$mol_probe.$atom.pdb"
-		
+	    set radio [ ::clustering::asignar_corte $atom]	
 		set lista_indices_cluster [clustering::clusterizar $radio $ncut $overlap_pdb]
 
 		#calcular_parametros_WS { 					indices 			distcut num_frames R90  WFRr id_overlap }
@@ -86,7 +87,7 @@ foreach mol_probe [dict key $lista_pruebas] {
 		
 		if {[llength $solvents_sites] > 0} {
 			
-			escribir_pdb $solvents_sites $overlap_pdb $mol_probe $atom
+			::solvent::escribir_pdb $solvents_sites $overlap_pdb $mol_probe $atom
 			puts "CLUSTERING '$mol_probe $atom' terminado. "
 	
 		}

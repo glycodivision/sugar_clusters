@@ -1,3 +1,4 @@
+
 package provide solvent 
 
 namespace eval ::solvent {
@@ -50,12 +51,12 @@ proc ::solvent::calcular_parametros_SS { indices distcut num_frames R90 WFRr pdb
 								$R90 					\
 								$indice_atom ]
 		
-		puts $f [join $lista_SS ";"]
+		
 
 		$punto delete
 		incr i
 	}
-	
+	puts $f [join $lista_SS ";"]
 	mol delete $id_overlap
 	close $f
 	return $lista_SS

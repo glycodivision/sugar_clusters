@@ -7,11 +7,11 @@ namespace eval ::clustering {
 
 proc ::clustering::asignar_corte { atom } {
 
-	if { [string first O $atom] } { 
+	if { [string first "O" $atom] > -1 } { 
 		return 1.4 
-	} elseif { [string first H $atom] } {
+	} elseif { [string first "H" $atom] > -1 } {
 		return 1
-	} elseif { [string first C $atom] } {
+	} elseif { [string first "C" $atom] > -1 } {
 		return 1.96
 	} else {
 		puts "CORTE : atomo $atom no encontrado, se asigna 0.6 como radio de corte"
