@@ -2,7 +2,43 @@
 package provide solvent 
 
 namespace eval ::solvent {
-    namespace export WPF calcular_parametros_SS escribir_pdb
+    namespace export WPF calcular_parametros_SS escribir_pdb r90
+}
+
+proc ::clustering::r90 { $centro_index $radio $overlap_pdb } {
+
+
+
+	set centro [atomselect ]
+
+	set gorfi [measure gofr $centro $cluster delta .005 rmax $radio first 0 last 0]
+
+	set posicion [lindex gorfi 0]
+
+	set integral_ac [lindex gorfi 2]
+
+	set max_ac [lindex integral_ac end]
+
+	set i [llength $posicion]
+	
+	set flag_max False
+	
+	while { $i > 0  && !flag_max } {
+
+		set proporcion [expr { [ lindex $integral_ac $i ] / $max_ac } ]
+
+		if { !flag_max && proporcion <  0.9 } {
+
+			set r90_min [ lindex $integral_ac $i ]
+			set r90_max [lindex $integral_ac [expr {$i + 1}]]
+			set flag_max True
+		}		
+	}	
+
+	set i [expr { $i - 1 } ]
+
+	return [expr {( r90_min + r90_max ) / 2 } ]
+
 }
 
 
