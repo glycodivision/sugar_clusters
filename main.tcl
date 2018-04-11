@@ -75,12 +75,13 @@ foreach mol_probe [dict key $lista_pruebas] {
 		puts "mol : $mol_probe, atom: $atom "
 		puts "overlap pdb : ws/overlap_$mol_probe.$atom.pdb"
 		set overlap_pdb "ws/overlap_$mol_probe.$atom.pdb"
+	    
 	    set radio [ ::clustering::asignar_corte $atom]	
 		set lista_indices_cluster [clustering::clusterizar $radio $ncut $overlap_pdb]
 
 		#calcular_parametros_WS { 					indices 			distcut num_frames R90  WFRr id_overlap }
 
-		set solvents_sites [solvent::calcular_parametros_SS $lista_indices_cluster $radio $num_frames $R90 $WFRr $overlap_pdb $mol_probe $atom]
+		set solvents_sites [solvent::calcular_parametros_SS $lista_indices_cluster $num_frames $R90 $WFRr $overlap_pdb $mol_probe $atom]
 
 		puts "$solvents_sites"
 

@@ -9,7 +9,7 @@ namespace eval ::solvent {
 proc ::solvent::WFP { n_w_cluster N_fotos_total WFRr } { ; return [expr { $n_w_cluster / ( $N_fotos_total * (( $WFRr ) ** 3) * 4/3 * 3.1416 * 0.0334 )}]  }
 
 # entran los indices y devuelve una lista ws = {  { nWS cantidad_aguas WFP R index }  }
-proc ::solvent::calcular_parametros_SS { indices distcut num_frames R90 WFRr pdb_overlap mol_probe atom } {
+proc ::solvent::calcular_parametros_SS { indices  num_frames R90 WFRr pdb_overlap mol_probe atom } {
 	
 	puts "calculando parametros Solv Sites"
 
@@ -27,7 +27,7 @@ proc ::solvent::calcular_parametros_SS { indices distcut num_frames R90 WFRr pdb
 	set i 0
 	foreach indice_atom $indices {
 		
-		set cluster_atoms 	[atomselect $id_overlap "within $distcut of index $indice_atom" ]
+		set cluster_atoms 	[atomselect $id_overlap "within 0.6 of index $indice_atom" ]
 		set cantidad_aguas  [$cluster_atoms num]
 		$cluster_atoms delete
 		
@@ -42,13 +42,13 @@ proc ::solvent::calcular_parametros_SS { indices distcut num_frames R90 WFRr pdb
 		set wfp 			[WFP  $cantidad_aguas $num_frames $WFRr ]
 		
 		
-		lappend lista_SS [list  "SS_$i"					\
-								$x_punto				\
-								$y_punto				\
-								$z_punto				\
-								$cantidad_aguas			\
-								[format "%.2f" $wfp ] 	\
-								$R90 					\
+		lappend lista_SS [list  "SS_$i"					  \
+								[format "%.3f" $x_punto ] \
+								[format "%.3f" $y_punto ] \
+								[format "%.3f" $z_punto ] \
+								$cantidad_aguas			  \
+								[format "%.2f" $wfp ] 	  \
+								$R90 					  \
 								$indice_atom ]
 		
 		
