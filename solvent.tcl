@@ -5,13 +5,13 @@ namespace eval ::solvent {
     namespace export WPF calcular_parametros_SS escribir_pdb r90
 }
 
-proc ::clustering::r90 { $centro_index $radio $overlap_pdb } {
+proc ::solvent::r90 { $centro_index $radio $punto } {
+	
+ 	#set id_overlap [mol new $pdb_overlap filebonds off autobonds off waitfor all]
 
+	#set centro [atomselect $id_overlap "index $centro_index" ]
 
-
-	set centro [atomselect ]
-
-	set gorfi [measure gofr $centro $cluster delta .005 rmax $radio first 0 last 0]
+	set gorfi [measure gofr $punto $cluster delta .005 rmax $radio first 0 last 0]
 
 	set posicion [lindex gorfi 0]
 
@@ -29,10 +29,10 @@ proc ::clustering::r90 { $centro_index $radio $overlap_pdb } {
 
 		if { !flag_max && proporcion <  0.9 } {
 
-			set r90_min [ lindex $integral_ac $i ]
-			set r90_max [lindex $integral_ac [expr {$i + 1}]]
+			set r90_min [lindex $integral_ac $i ]
+			set r90_max [lindex $integral_ac [expr {$i + 1}] ]
 			set flag_max True
-		}		
+		}
 	}	
 
 	set i [expr { $i - 1 } ]
@@ -41,11 +41,11 @@ proc ::clustering::r90 { $centro_index $radio $overlap_pdb } {
 
 }
 
-
+# rescatar "r 60"
 proc ::solvent::WFP { n_w_cluster N_fotos_total WFRr } { ; return [expr { $n_w_cluster / ( $N_fotos_total * (( $WFRr ) ** 3) * 4/3 * 3.1416 * 0.0334 )}]  }
 
 # entran los indices y devuelve una lista ws = {  { nWS cantidad_aguas WFP R index }  }
-proc ::solvent::calcular_parametros_SS { indices  num_frames R90 WFRr pdb_overlap mol_probe atom } {
+proc ::solvent::calcular_parametros_SS { indices  num_frames WFRr pdb_overlap mol_probe atom radio } {
 	
 	puts "calculando parametros Solv Sites"
 
@@ -63,9 +63,7 @@ proc ::solvent::calcular_parametros_SS { indices  num_frames R90 WFRr pdb_overla
 	set i 0
 	foreach indice_atom $indices {
 		
-		set cluster_atoms 	[atomselect $id_overlap "within 0.6 of index $indice_atom" ]
-		set cantidad_aguas  [$cluster_atoms num]
-		$cluster_atoms delete
+		set cluster_atoms 	[atomselect $id_overlap "within $radio of index $indice_atom" ]		
 		
 		set punto 			[atomselect $id_overlap "index $indice_atom"]
 
@@ -76,7 +74,10 @@ proc ::solvent::calcular_parametros_SS { indices  num_frames R90 WFRr pdb_overla
 		set tipo			[$punto get name]
 
 		set wfp 			[WFP  $cantidad_aguas $num_frames $WFRr ]
+
+		#set R90 			[calcular_parametros_SS $indice_atom]
 		
+		$cluster_atoms delete
 		
 		lappend lista_SS [list  "SS_$i"					  \
 								[format "%.3f" $x_punto ] \

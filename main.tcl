@@ -68,7 +68,7 @@ mol delete $id_referencia
 ################### CLUSTERING Y CALCULO DE WS ##########################
 
 set WFRr 0.6
-set R90 1
+
 
 foreach mol_probe [dict key $lista_pruebas] {
 	foreach atom [dict get $lista_pruebas $mol_probe] {
@@ -78,10 +78,9 @@ foreach mol_probe [dict key $lista_pruebas] {
 	    
 	    set radio [ ::clustering::asignar_corte $atom]	
 		set lista_indices_cluster [clustering::clusterizar $radio $ncut $overlap_pdb]
+				# $centro_index $radio $pdb_overlap 
 
-		#calcular_parametros_WS { 					indices 			distcut num_frames R90  WFRr id_overlap }
-
-		set solvents_sites [solvent::calcular_parametros_SS $lista_indices_cluster $num_frames $R90 $WFRr $overlap_pdb $mol_probe $atom]
+		set solvents_sites [solvent::calcular_parametros_SS $lista_indices_cluster $num_frames $WFRr $overlap_pdb $mol_probe $atom]
 
 		puts "$solvents_sites"
 
