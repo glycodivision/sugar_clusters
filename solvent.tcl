@@ -5,44 +5,72 @@ namespace eval ::solvent {
     namespace export WPF calcular_parametros_SS escribir_pdb r90
 }
 
-proc ::solvent::r90 { $centro_index $radio $punto } {
+proc ::solvent::r90 { punto radio_max cluster } {
 	
  	#set id_overlap [mol new $pdb_overlap filebonds off autobonds off waitfor all]
 
 	#set centro [atomselect $id_overlap "index $centro_index" ]
 
-	set gorfi [measure gofr $punto $cluster delta .005 rmax $radio first 0 last 0]
+	set gorfi [measure gofr $punto $cluster delta .005 rmax $radio_max first 0 last 0]
 
-	set posicion [lindex gorfi 0]
+	set posicion [lindex $gorfi 0]
 
-	set integral_ac [lindex gorfi 2]
+	set integral_ac [lindex $gorfi 2]
 
-	set max_ac [lindex integral_ac end]
+	set max_ac [lindex $integral_ac end]
 
-	set i [llength $posicion]
+	set i [expr { [llength $posicion] - 1 } ]
 	
 	set flag_max False
 	
-	while { $i > 0  && !flag_max } {
+	while { $i > 0  && !$flag_max } {
 
-		set proporcion [expr { [ lindex $integral_ac $i ] / $max_ac } ]
+		puts "$i [ lindex $integral_ac $i ]"
+		set proporcion [expr { [ lindex $integral_ac $i ] / ( $max_ac * 1.0) } ]
 
-		if { !flag_max && proporcion <  0.9 } {
 
-			set r90_min [lindex $integral_ac $i ]
-			set r90_max [lindex $integral_ac [expr {$i + 1}] ]
+		if { !$flag_max && $proporcion <  0.9} {
+
+			set r90_min [lindex $posicion $i ]
+			set r90_max [lindex $posicion [expr {$i + 1}] ]
 			set flag_max True
 		}
+		set i [expr { $i - 1 } ]
 	}	
 
-	set i [expr { $i - 1 } ]
+	
 
-	return [expr {( r90_min + r90_max ) / 2 } ]
+	return [expr { ( $r90_min + $r90_max ) / 2.0 } ]
 
 }
 
 # rescatar "r 60"
 proc ::solvent::WFP { n_w_cluster N_fotos_total WFRr } { ; return [expr { $n_w_cluster / ( $N_fotos_total * (( $WFRr ) ** 3) * 4/3 * 3.1416 * 0.0334 )}]  }
+
+proc ::solvent::number_element_cluster_06 { punto radio_max cluster_atoms } {
+	
+ 	#set id_overlap [mol new $pdb_overlap filebonds off autobonds off waitfor all]
+
+	#set centro [atomselect $id_overlap "index $centro_index" ]
+
+	set gorfi [measure gofr $punto $cluster_atoms delta .005 rmax $radio_max first 0 last 0]
+
+	set posicion [lindex $gorfi 0]
+
+	set flag_max False
+	
+	set integral_ac [lindex $gorfi 2]
+	
+	set j 0
+	foreach i $posicion {
+		if { $i == 0.6025} {
+
+			return [ lindex $integral_ac $j ]
+		}
+		incr j	
+	}
+}
+
 
 # entran los indices y devuelve una lista ws = {  { nWS cantidad_aguas WFP R index }  }
 proc ::solvent::calcular_parametros_SS { indices  num_frames WFRr pdb_overlap mol_probe atom radio } {
@@ -73,26 +101,28 @@ proc ::solvent::calcular_parametros_SS { indices  num_frames WFRr pdb_overlap mo
 
 		set tipo			[$punto get name]
 
-		set wfp 			[WFP  $cantidad_aguas $num_frames $WFRr ]
+		set n_s_cluster 	[number_element_cluster_06 $punto $radio $cluster_atoms]
+		puts "calcule n_s_cluster da = $n_s_cluster"
 
-		#set R90 			[calcular_parametros_SS $indice_atom]
-		
+		puts "  $n_s_cluster  $num_frames $WFRr  "
+		set wfp 			[WFP $n_s_cluster $num_frames $WFRr ]
+		#punto radio cluster
+		set R90 			[r90 $punto $radio $cluster_atoms]
 		$cluster_atoms delete
 		
-		lappend lista_SS [list  "SS_$i"					  \
+		lappend lista_SS [ list  "SS_$i"				  \
 								[format "%.3f" $x_punto ] \
 								[format "%.3f" $y_punto ] \
 								[format "%.3f" $z_punto ] \
-								$cantidad_aguas			  \
+								[format "%.0f" $n_s_cluster	] \
 								[format "%.2f" $wfp ] 	  \
-								$R90 					  \
-								$indice_atom ]
-		
-		
+								[format "%.2f" $R90 ] 	  \
+								$indice_atom]\n
 
 		$punto delete
 		incr i
 	}
+
 	puts $f [join $lista_SS ";"]
 	mol delete $id_overlap
 	close $f

@@ -79,8 +79,8 @@ foreach mol_probe [dict key $lista_pruebas] {
 	    set radio [ ::clustering::asignar_corte $atom]	
 		set lista_indices_cluster [clustering::clusterizar $radio $ncut $overlap_pdb]
 				# $centro_index $radio $pdb_overlap 
-
-		set solvents_sites [solvent::calcular_parametros_SS $lista_indices_cluster $num_frames $WFRr $overlap_pdb $mol_probe $atom]
+						  # solvent::calcular_parametros_SS indices                 num_frames WFRr pdb_overlap mol_probe atom radio
+		set solvents_sites [solvent::calcular_parametros_SS $lista_indices_cluster $num_frames $WFRr $overlap_pdb $mol_probe $atom $radio]
 
 		puts "$solvents_sites"
 
