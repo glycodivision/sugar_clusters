@@ -46,6 +46,8 @@ mol addfile $trayectoria step $salto waitfor all molid $id_dinamica
 set num_frames [molinfo $id_dinamica get numframes]
 set ncut [expr { $num_frames * $n_cut_ratio}]
 
+file delete -force "ws"
+file delete -force "Molsites"
 file mkdir "MolSites"
 file mkdir "ws"
 

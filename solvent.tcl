@@ -43,7 +43,7 @@ proc ::solvent::r90 { punto radio_max cluster } {
 	return [expr { ( $r90_min + $r90_max ) / 2.0 } ]
 
 }
-
+# 0.00224 es la densidad
 # rescatar "r 60"
 proc ::solvent::WFP { n_w_cluster N_fotos_total WFRr } { ; return [expr { $n_w_cluster / ( $N_fotos_total * (( $WFRr ) ** 3) * 4/3 * 3.1416 * 0.0334 )}]  }
 
@@ -88,7 +88,7 @@ proc ::solvent::calcular_parametros_SS { indices  num_frames WFRr pdb_overlap mo
 	
 	set lista_SS {}
 
-	set i 0
+	set i 1
 	foreach indice_atom $indices {
 		
 		set cluster_atoms 	[atomselect $id_overlap "within $radio of index $indice_atom" ]		
@@ -99,8 +99,8 @@ proc ::solvent::calcular_parametros_SS { indices  num_frames WFRr pdb_overlap mo
 		set y_punto 		[$punto get y]
 		set z_punto 		[$punto get z] 
 
-		set tipo			[$punto get name]
-
+		set tipo		[$punto get name]
+                set number_cluster_elemt	[llength [ $cluster_atoms get index]] 
 		set n_s_cluster 	[number_element_cluster_06 $punto $radio $cluster_atoms]
 		puts "calcule n_s_cluster da = $n_s_cluster"
 
@@ -110,20 +110,30 @@ proc ::solvent::calcular_parametros_SS { indices  num_frames WFRr pdb_overlap mo
 		set R90 			[r90 $punto $radio $cluster_atoms]
 		$cluster_atoms delete
 		
-		lappend lista_SS [ list  "SS_$i"				  \
-								[format "%.3f" $x_punto ] \
-								[format "%.3f" $y_punto ] \
-								[format "%.3f" $z_punto ] \
-								[format "%.0f" $n_s_cluster	] \
-								[format "%.2f" $wfp ] 	  \
-								[format "%.2f" $R90 ] 	  \
-								$indice_atom]\n
+		lappend lista_SS    [ list  "SS_$i" 				  \
+							[format "%.3f" $x_punto ]  \
+							[format "%.3f" $y_punto ]  \
+							[format "%.3f" $z_punto ]  \
+							[format "%.0f" $number_cluster_elemt ]  \
+							[format "%.2f" $wfp ]  	  \
+							[format "%.2f" $R90 ]  	  \
+							$indice_atom]
+
+		lappend lista_SS_csv [join [ list  "SS_$i" 				  \
+								[format "%.3f" $x_punto ]  \
+								[format "%.3f" $y_punto ]  \
+								[format "%.3f" $z_punto ]  \
+								[format "%.0f" $number_cluster_elemt ]  \
+								[format "%.2f" $wfp ]  	  \
+								[format "%.2f" $R90 ]  	  \
+								$indice_atom]  ";"]
+								
 
 		$punto delete
 		incr i
 	}
 
-	puts $f [join $lista_SS ";"]
+	puts $f [join $lista_SS_csv "\n"]
 	mol delete $id_overlap
 	close $f
 	return $lista_SS
