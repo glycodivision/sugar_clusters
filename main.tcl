@@ -1,5 +1,5 @@
 set dir [lindex $argv 2]
-foreach src [list solvent.tcl qt_clustering.tcl overlap.tcl parser.tcl] {
+foreach src [list solvent.tcl clustering.tcl overlap.tcl parser.tcl] {
 	source "$dir/$src"
 }
 
@@ -53,7 +53,7 @@ file mkdir "ws"
 
 ################### ARMADO DE OVERLAPING ################################
 
-if { $aguas == "TRUE"} {
+if { $aguas == "TRUE" 	} {
 
 	set lista_pruebas [list $cosolvent_mol_prueba $cosolvent_atoms_probe "WAT" {O} ]
 	
@@ -78,8 +78,8 @@ foreach mol_probe [dict key $lista_pruebas] {
 		puts "overlap pdb : ws/overlap_$mol_probe.$atom.pdb"
 		set overlap_pdb "ws/overlap_$mol_probe.$atom.pdb"
 	    
-	    set radio [ ::qt_clustering::asignar_corte $atom]	
-		set lista_indices_cluster [qt_clustering::clusterizar $radio $ncut $overlap_pdb]
+	    set radio [ ::clustering::asignar_corte $atom]	
+		set lista_indices_cluster [clustering::clusterizar $radio $ncut $overlap_pdb]
 				# $centro_index $radio $pdb_overlap 
 						  # solvent::calcular_parametros_SS indices                 num_frames WFRr pdb_overlap mol_probe atom radio
 		set solvents_sites [solvent::calcular_parametros_SS $lista_indices_cluster $num_frames $WFRr $overlap_pdb $mol_probe $atom $radio]
