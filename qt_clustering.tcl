@@ -1,11 +1,11 @@
-package provide clustering 1.0
+package provide qt_clustering 1.0
 
-namespace eval ::clustering {
+namespace eval ::qt_clustering {
     namespace export asignar_corte ldelete clusterizar
 }
 
 
-proc ::clustering::asignar_corte { atom } {
+proc ::qt_clustering::asignar_corte { atom } {
 
 	if { [string first "O" $atom] > -1 } { 
 		return 1.4 
@@ -13,6 +13,8 @@ proc ::clustering::asignar_corte { atom } {
 		return 1
 	} elseif { [string first "C" $atom] > -1 } {
 		return 1.96
+       } elseif { [string first "DU" $atom] > -1 } {
+                return 1.96
 	} else {
 		puts "CORTE : atomo $atom no encontrado, se asigna 0.6 como radio de corte"
 		return 0.6
@@ -21,11 +23,11 @@ proc ::clustering::asignar_corte { atom } {
 }
 
 # borra el elemento $indice de la lista
-proc ::clustering::ldelete { lista indice } {
+proc ::qt_clustering::ldelete { lista indice } {
 	return [ concat [ lrange $lista 0 [expr { $indice - 1  } ] ] [ lrange $lista [ expr { $indice + 1  } ] end  ] ] 
 }
 
-proc ::clustering::clusterizar { distcut ncut pdb_overlap } {
+proc ::qt_clustering::clusterizar { distcut ncut pdb_overlap } {
 	
 	
 	

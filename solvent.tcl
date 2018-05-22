@@ -45,6 +45,8 @@ proc ::solvent::r90 { punto radio_max cluster } {
 }
 # 0.00224 es la densidad
 # rescatar "r 60"
+# en 1 A cubico hay 0.030219679 aguas en cualquier momento dado
+# para una MD de 500 fotos por ns, en 20ns deberian haber 302 aguas en el bulk
 proc ::solvent::WFP { n_w_cluster N_fotos_total WFRr } { ; return [expr { $n_w_cluster / ( $N_fotos_total * (( $WFRr ) ** 3) * 4/3 * 3.1416 * 0.0334 )}]  }
 
 proc ::solvent::number_element_cluster_06 { punto radio_max cluster_atoms } {

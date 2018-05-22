@@ -13,6 +13,9 @@ echo "   (Ej: resid 1 47 78 80 121 122 123 125)"
 echo " "
 echo " Comando: sugarclustdebug -a parameters.in"
 echo " "
+exit -1
+fi
+if [ "$1" = "-i" ] ; then
 echo " "
 echo "   trayectoria.nc    # TRAJECTORY FILE( *.nc or *.binpos)" >> parameters.in
 echo "   topologia.parm7   # TOPOLOGY FILE (*.parm7 or *.prmtop)" >> parameters.in
