@@ -16,8 +16,8 @@ proc ::qt_clustering::asignar_corte { atom } {
        } elseif { [string first "DU" $atom] > -1 } {
                 return 1.96
 	} else {
-		puts "CORTE : atomo $atom no encontrado, se asigna 0.6 como radio de corte"
-		return 0.6
+		puts "CORTE : atomo $atom no encontrado, se asigna 0.62035 como radio de corte"
+		return 0.62035
 	}
 
 }
@@ -55,8 +55,12 @@ proc ::qt_clustering::clusterizar { distcut ncut pdb_overlap } {
 
 		set punto [ atomselect $overlap "within $distcut of index $atomo" ]
 		
-		set cantidad_puntos [ $punto num ]
-
+		#set pfpelements [ atomselect $overlap "within 0.62035 of index $atomo" ]
+		
+		#set cantidad_puntos [ $pfpelements num ]
+ 		
+		set cantidad_puntos [ $puntos num ]
+		
 		if { $cantidad_puntos > $ncut } {
 			lappend lista_precluster [ list $atomo $cantidad_puntos ]
 		}
@@ -84,7 +88,9 @@ proc ::qt_clustering::clusterizar { distcut ncut pdb_overlap } {
 		puts "$iº  cluster incorporado "
 		
 		lappend lista_clusters [ lindex $lista_precluster $i 0 ]
-	    
+
+	   # Demian: por que hace esta operacion "$distcut * 2" para hacer la seleccion?
+
 	    set punto [ atomselect $overlap " within [expr { $distcut * 2 } ] of index [lindex $lista_precluster $i 0 ] "]
 		
 		set puntos_en_cluster [ $punto list ] 

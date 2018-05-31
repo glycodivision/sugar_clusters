@@ -47,6 +47,8 @@ proc ::solvent::r90 { punto radio_max cluster } {
 # rescatar "r 60"
 # en 1 A cubico hay 0.030219679 aguas en cualquier momento dado
 # para una MD de 500 fotos por ns, en 20ns deberian haber 302 aguas en el bulk
+# radio de la esfera 0.62035
+
 proc ::solvent::WFP { n_w_cluster N_fotos_total WFRr } { ; return [expr { $n_w_cluster / ( $N_fotos_total * (( $WFRr ) ** 3) * 4/3 * 3.1416 * 0.0334 )}]  }
 
 proc ::solvent::number_element_cluster_06 { punto radio_max cluster_atoms } {
@@ -69,7 +71,7 @@ proc ::solvent::number_element_cluster_06 { punto radio_max cluster_atoms } {
 
 			return [ lindex $integral_ac $j ]
 		}
-		incr j	
+		incr j
 	}
 }
 
@@ -84,7 +86,7 @@ proc ::solvent::calcular_parametros_SS { indices  num_frames WFRr pdb_overlap mo
 	puts "mol mem $id_overlap"	
 
 
-	set f [open "MolSites/solvent_site_$mol_probe.$atom.csv" w ]
+	set f [open "molsites/solvent_site_$mol_probe.$atom.csv" w ]
 	
 	puts $f "SS;x;y;z;#atomos;SPF;R90;indice_overlap"
 	
@@ -99,7 +101,7 @@ proc ::solvent::calcular_parametros_SS { indices  num_frames WFRr pdb_overlap mo
 
 		set x_punto 		[$punto get x]
 		set y_punto 		[$punto get y]
-		set z_punto 		[$punto get z] 
+		set z_punto 		[$punto get z]
 
 		set tipo		[$punto get name]
                 set number_cluster_elemt	[llength [ $cluster_atoms get index]] 
@@ -174,7 +176,7 @@ proc ::solvent::escribir_pdb { lista_SS overlap_pdb mol_probe atom } {
 	
 	puts "atomo: $atom , mol : $mol_probe "
 
-	$sel writepdb "MolSites/SS_${mol_probe}_$atom.pdb"
+	$sel writepdb "molsites/SS_${mol_probe}_$atom.pdb"
 	
 	$sel delete 
 

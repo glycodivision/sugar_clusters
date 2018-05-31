@@ -44,11 +44,17 @@ proc ::parser::parser { linea dic_argumentos} {
 	# toma una linea del archivo de parametros y parsea la linea, devuelve una actualizacion de diccionario
 	puts [string trim [lindex [split $linea "=" ] 0 ] ]
 	
-
-	if { [string match "TRAJECTORY" [string trim [lindex [split $linea "=" ] 0 ] ] ] == 1 } {
+	if { [string match "FOLDNAME" [string trim [lindex [split $linea "=" ] 0 ] ] ] == 1 } {
 
 		set argumento [ string_op $linea ]
-		dict set dic_argumentos "trayectoria" $argumento
+		dict set dic_argumentos "foldname" $argumento
+
+
+        }       elseif { [string match "TRAJECTORY" [string trim [lindex [split $linea "=" ] 0 ] ] ]  == 1 } {
+
+                        set argumento [ string_op $linea ]
+                        dict set dic_argumentos "trayectoria" $argumento
+
 
 	}	elseif { [string match "TOPOLOGY" [string trim [lindex [split $linea "=" ] 0 ] ] ]  == 1 } {
 

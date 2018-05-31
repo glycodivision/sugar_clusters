@@ -8,7 +8,7 @@ namespace eval ::overlap {
 
 proc ::overlap::solapamiento_dinamica { dinamica referencia salto binding_site mols_probe } {
 
-	set rmsd_out [open "ws/rmsd_fit.csv" w]
+	set rmsd_out [open "overlaps/rmsd_fit.csv" w]
 
 	#rmsd_fit mask
 	puts $rmsd_out "Frame;RMSD"
@@ -16,20 +16,17 @@ proc ::overlap::solapamiento_dinamica { dinamica referencia salto binding_site m
 	
 	set reference	[atomselect $referencia "$binding_site" frame 0]
 	set compare 	[atomselect $dinamica "$binding_site" ] 
-	set num_steps	[molinfo $dinamica get numframes]
-	
+	set num_steps	[molinfo $dinamica get numframes]	
 	
 	#inicializo los archivos 
 	foreach mol_probe [dict key $mols_probe] { 			
 		foreach atom [dict get $mols_probe $mol_probe] {
-			set current_overlap [open "ws/overlap_$mol_probe.$atom.pdb" w]
+			set current_overlap [open "overlaps/overlap_$mol_probe.$atom.pdb" w]
 			close $current_overlap
 		}
 	}
 
 	for {set frame 0} {$frame < $num_steps} {incr frame $salto } {
-
-		
 
         # compute the transformation
 		set trans_mat [measure fit $compare $reference]
@@ -47,21 +44,17 @@ proc ::overlap::solapamiento_dinamica { dinamica referencia salto binding_site m
         foreach mol_probe [dict key $mols_probe] { 
 					
 			foreach atom [dict get $mols_probe $mol_probe] {
-       			
-
-				
-
-       			
+     
        			# aca va el reparto a distintos mapas....
        			set compare_probe [atomselect $dinamica "(resname $mol_probe and name $atom) and within 5 of ( $binding_site )" frame $frame ]
         		
         		#std_salida "./stdout"
-        		$compare_probe writepdb ws/temp_$mol_probe.$atom.pdb
+        		$compare_probe writepdb overlaps/temp_$mol_probe.$atom.pdb
 				#std_salida "/dev/tty"
         		
-        		set current_overlap [open "ws/overlap_$mol_probe.$atom.pdb" a]
+        		set current_overlap [open "overlaps/overlap_$mol_probe.$atom.pdb" a]
         		
-        		foreach linea [procesar_temporal "ws/temp_$mol_probe.$atom.pdb" ] { 
+        		foreach linea [procesar_temporal "overlaps/temp_$mol_probe.$atom.pdb" ] { 
         			puts $current_overlap $linea 
         		}       			
        			close $current_overlap	
@@ -72,7 +65,7 @@ proc ::overlap::solapamiento_dinamica { dinamica referencia salto binding_site m
 
 	foreach mol_probe [dict key $mols_probe] {			
 		foreach atom [dict get $mols_probe $mol_probe] {
-			set current_overlap [open "ws/overlap_$mol_probe.$atom.pdb" a]
+			set current_overlap [open "overlaps/overlap_$mol_probe.$atom.pdb" a]
 			puts $current_overlap "END"
 			close $current_overlap
 		}

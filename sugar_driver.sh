@@ -27,5 +27,5 @@ exit -1
 fi
 
 
-/usr/bin/env vmd -dispdev text -e `dirname $0`/main.tcl -args $@ `dirname $0`
+/usr/bin/env time vmd -dispdev text -e `dirname $0`/main.tcl -args $@ `dirname $0`
 #/usr/bin/env vmd -dispdev text -e `dirname $0`/sugar.tcl -args $@

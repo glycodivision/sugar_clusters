@@ -1,5 +1,5 @@
 set dir [lindex $argv 2]
-foreach src [list solvent.tcl clustering.tcl overlap.tcl parser.tcl] {
+foreach src [list solvent.tcl qt_clustering.tcl overlap.tcl parser.tcl] {
 	source "$dir/$src"
 }
 
@@ -7,6 +7,7 @@ foreach src [list solvent.tcl clustering.tcl overlap.tcl parser.tcl] {
 
 set dict_parametros [parser::parsear_parametros "parameters.in"]
 
+set foldname		[dict get $dict_parametros foldname]
 set binding_site	[dict get $dict_parametros binding_site]
 
 set trayectoria		[dict get $dict_parametros trayectoria ]
@@ -24,11 +25,12 @@ set salto 					[dict get $dict_parametros step ]
 set aguas 			[dict get $dict_parametros solvent_probe]
 
 puts "\n\n\n"
+puts "foldname	  : $foldname"
 puts "binding_site: $binding_site"
 puts "trayectoria : $trayectoria"
 puts "referencia  : $referencia"
 puts "salto  	  : $salto"
-puts "radio       : $radio "
+puts "radio       : $radio"
 puts "binding_site: $binding_site"	
 puts "mol_prueba  : $cosolvent_mol_prueba "
 puts "atomos prueb: $cosolvent_atoms_probe"
@@ -46,10 +48,11 @@ mol addfile $trayectoria step $salto waitfor all molid $id_dinamica
 set num_frames [molinfo $id_dinamica get numframes]
 set ncut [expr { $num_frames * $n_cut_ratio}]
 
-file delete -force "ws"
-file delete -force "Molsites"
-file mkdir "MolSites"
-file mkdir "ws"
+file delete -force "overlaps"
+file delete -force "molsites"
+
+file mkdir "overlaps"
+file mkdir "molsites"
 
 ################### ARMADO DE OVERLAPING ################################
 
@@ -69,17 +72,17 @@ mol delete $id_referencia
 
 ################### CLUSTERING Y CALCULO DE WS ##########################
 
-set WFRr 0.6
+set WFRr 0.62035
 
 
 foreach mol_probe [dict key $lista_pruebas] {
 	foreach atom [dict get $lista_pruebas $mol_probe] {
 		puts "mol : $mol_probe, atom: $atom "
-		puts "overlap pdb : ws/overlap_$mol_probe.$atom.pdb"
-		set overlap_pdb "ws/overlap_$mol_probe.$atom.pdb"
+		puts "overlap pdb : overlaps/overlap_$mol_probe.$atom.pdb"
+		set overlap_pdb "overlaps/overlap_$mol_probe.$atom.pdb"
 	    
-	    set radio [ ::clustering::asignar_corte $atom]	
-		set lista_indices_cluster [clustering::clusterizar $radio $ncut $overlap_pdb]
+	    set radio [ ::qt_clustering::asignar_corte $atom]	
+		set lista_indices_cluster [qt_clustering::clusterizar $radio $ncut $overlap_pdb]
 				# $centro_index $radio $pdb_overlap 
 						  # solvent::calcular_parametros_SS indices                 num_frames WFRr pdb_overlap mol_probe atom radio
 		set solvents_sites [solvent::calcular_parametros_SS $lista_indices_cluster $num_frames $WFRr $overlap_pdb $mol_probe $atom $radio]
@@ -94,4 +97,10 @@ foreach mol_probe [dict key $lista_pruebas] {
 	
 		}
 	}
-}	
+}
+
+file delete -force $foldname
+file mkdir $foldname
+exec mv overlaps molsites $foldname 
+
+quit	
