@@ -1,10 +1,11 @@
+package provide residence_time 1.0
+
+namespace eval ::residence_time {
+    namespace armar_seleccion armar_corte corroborar_distancia tiempo_residencia
+}
 
 # alineamiento, tiempo acumulado por cada index, 
 
-
-
-set topologia "./../1SL4-A_apo_fen_HMR.prmtop"
-set trayectoria "./../MD-1-1SL4-A_apo_fen_HMR-200-ns-WAT,FEN.nc"
 set step 10
 # en ps
 set time_interval 2
@@ -69,81 +70,73 @@ proc corroborar_distancia { coordenadas_xyz_atom coordenadas_ss index_atom atom_
   return $indices_atom_in_ss
 }
 
-set archivos [glob *.csv]
 
-set general_sites {}
-foreach path_archivo $archivos {
+proc tiempo_residencia { solvent_sites_files id_dinamica } {
+
+  set general_sites {}
+  foreach path_archivo $solvent_sites_files {
 
     set nombre_archivo [lindex [split $path_archivo "/"] end]
 
-  set atom [lindex [split $nombre_archivo "."] 1 ]
+    set atom [lindex [split $nombre_archivo "."] 1 ]
 
-  set mol [lindex [split [lindex [split $nombre_archivo "."] 0] "_"] end]
+    set mol [lindex [split [lindex [split $nombre_archivo "."] 0] "_"] end]
 
-  set f [open $path_archivo]
+    set f [open $path_archivo]
 
-  set linea_0 1
-  
-  while { [gets $f linea] >= 0 } {
-      
-      if {$linea_0} {
-        set linea_0 0
-
-      } else {
-
-          #puts "$linea"
-
-          set s_linea [split $linea ";"]
-          
-          set SS [lindex $s_linea 0]
-
-          set xyz [lrange $s_linea 1 3]
-
-          lappend general_sites [list $SS $xyz $mol $atom ]
-
-          
-        }
-  }
-  puts $general_sites
-  close $f
-  
-}
-
-
-set id_dinamica [mol new $topologia filebonds off autobonds off]
-mol addfile $trayectoria step $step waitfor all molid $id_dinamica
-
-set num_steps [molinfo $id_dinamica get numframes]
-
-
-# se recorre por foto y una vez en la foto
-# se observa el atom index por cada SS 
-for {set frame 0} {$frame < $num_steps} {incr frame 1 } {
-
-  foreach ss $general_sites {
-
-    set SS   [lindex $ss 0]
-    set xyz  [lindex $ss 1]
-    set mol  [lindex $ss 2]
-    set atom [lindex $ss 3]
-
-    set seleccion [armar_seleccion $xyz $mol $atom]
-
-    set atoms_in_ss [atomselect top $seleccion frame $frame]
-
-    set f [open "${SS}_${mol}_${atom}.site" a]
-
-    #sumo el step al frame para obtener el numero correcto de frame en la dinamica
-    #puts $f "[expr {${frame} * ${step}}] ; [expr {${frame}*${step}*${time_interval}}] ; [$atoms_in_ss get index]"
+    set linea_0 1
     
-    set atom_index_in_ss [corroborar_distancia [$atoms_in_ss get { x y z }] $xyz [$atoms_in_ss get index] $atom ] 
-    
-    puts $f "[expr {${frame} * ${step}}] ; [expr {${frame}*${step}*${time_interval}}] ; ${atom_index_in_ss}"
+    while { [gets $f linea] >= 0 } {
+        
+        if {$linea_0} {
+          set linea_0 0
 
+        } else {
+
+            set s_linea [split $linea ";"]
+            
+            set SS [lindex $s_linea 0]
+
+            set xyz [lrange $s_linea 1 3]
+
+            lappend general_sites [list $SS $xyz $mol $atom ]
+
+            
+          }
+    }
+    puts $general_sites
     close $f
-    #$seleccion delete
+    
+  }  
+  
 
+  # se recorre por foto y una vez en la foto
+  # se observa el atom index por cada SS 
+  for {set frame 0} {$frame < $num_steps} {incr frame 1 } {
+
+    foreach ss $general_sites {
+
+      set SS   [lindex $ss 0]
+      set xyz  [lindex $ss 1]
+      set mol  [lindex $ss 2]
+      set atom [lindex $ss 3]
+
+      set seleccion [armar_seleccion $xyz $mol $atom]
+
+      set atoms_in_ss [atomselect top $seleccion frame $frame]
+
+      set f [open "${SS}_${mol}_${atom}.site" a]
+
+      #sumo el step al frame para obtener el numero correcto de frame en la dinamica
+      #puts $f "[expr {${frame} * ${step}}] ; [expr {${frame}*${step}*${time_interval}}] ; [$atoms_in_ss get index]"
+      
+      set atom_index_in_ss [corroborar_distancia [$atoms_in_ss get { x y z }] $xyz [$atoms_in_ss get index] $atom ] 
+      
+      puts $f "[expr {${frame} * ${step}}] ; [expr {${frame}*${step}*${time_interval}}] ; ${atom_index_in_ss}"
+
+      close $f
+      #$seleccion delete
+
+    }
   }
 }
-
-exit
