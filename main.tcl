@@ -99,6 +99,29 @@ foreach mol_probe [dict key $lista_pruebas] {
 	}
 }
 
+
+################### TIEMPO DE RESIDENCIA #################################
+
+
+# archivos en dir con los csvs
+set solvent_sites_files [glob molsites/*.csv]
+
+############################################################################################## ELIJO STEP !!!
+set step 10
+
+# abro referencia
+set id_referencia	[mol new $referencia autobonds off ]
+
+# abro topologia y agrego dinamica
+set id_dinamica		[mol new $topologia filebonds off autobonds off]
+mol addfile $trayectoria step $salto waitfor all molid $id_dinamica
+
+set num_frames [molinfo $id_dinamica get numframes]
+
+# 
+::residence_time::tiempo_residencia $solvent_sites_files $id_dinamica $binding_site
+
+
 file delete -force $foldname
 file mkdir $foldname
 exec mv overlaps molsites $foldname 
