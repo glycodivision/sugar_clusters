@@ -1,7 +1,10 @@
 #!/bin/sh
+<<<<<<< HEAD
 #/usr/bin/env vmd -dispdev text -e 
 #/usr/bin/env vmd -e `dirname $0`/sugar_1_1.tcl -args $@
 /usr/bin/env vmd -dispdev text -e `dirname $0`/sugar_1.5.tcl -args $@
+=======
+>>>>>>> origin/modularizada
 
 if [ "$1" = "-h" ] ; then
 echo " "
@@ -16,14 +19,31 @@ echo "   (Ej: resid 1 47 78 80 121 122 123 125)"
 echo " "
 echo " Comando: sugarclustdebug -a parameters.in"
 echo " "
+<<<<<<< HEAD
+=======
+exit -1
+fi
+if [ "$1" = "-i" ] ; then
+>>>>>>> origin/modularizada
 echo " "
 echo "   trayectoria.nc    # TRAJECTORY FILE( *.nc or *.binpos)" >> parameters.in
 echo "   topologia.parm7   # TOPOLOGY FILE (*.parm7 or *.prmtop)" >> parameters.in
 echo "   referencia.pdb    # REFERENCE FILE (*.pdb)" >> parameters.in
 echo "   100               # PERCENT (% of trajectory frames to be used)" >> parameters.in
+<<<<<<< HEAD
 echo "   0.6   		   # CLUSTER RADIUS (float)" >> parameters.in
 echo "   sitio_union.dat"  >> parameters.in
 exit
 fi
 
 
+=======
+echo "   0.6               # CLUSTER RADIUS (float)" >> parameters.in
+echo "   sitio_union.dat"  >> parameters.in
+exit -1
+fi
+
+
+/usr/bin/env time vmd -dispdev text -e `dirname $0`/main.tcl -args $@ `dirname $0`
+#/usr/bin/env vmd -dispdev text -e `dirname $0`/sugar.tcl -args $@
+>>>>>>> origin/modularizada
