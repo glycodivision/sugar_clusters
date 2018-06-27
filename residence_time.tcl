@@ -71,7 +71,7 @@ proc corroborar_distancia { coordenadas_xyz_atom coordenadas_ss index_atom atom_
 }
 
 
-proc tiempo_residencia { solvent_sites_files id_dinamica } {
+proc tiempo_residencia { solvent_sites_files id_dinamica binding_site } {
 
   set general_sites {}
   foreach path_archivo $solvent_sites_files {
@@ -110,9 +110,22 @@ proc tiempo_residencia { solvent_sites_files id_dinamica } {
   }  
   
 
+  set reference [atomselect $referencia "$binding_site" frame 0]
+  set compare   [atomselect $dinamica "$binding_site" ] 
+
+
   # se recorre por foto y una vez en la foto
   # se observa el atom index por cada SS 
   for {set frame 0} {$frame < $num_steps} {incr frame 1 } {
+
+    
+    set trans_mat [measure fit $compare $reference]
+    
+    set compare_bs [atomselect $dinamica "all" frame $frame ]
+    
+    $compare_bs move $trans_mat
+    
+    #set rmsd [measure rmsd $compare $reference]
 
     foreach ss $general_sites {
 

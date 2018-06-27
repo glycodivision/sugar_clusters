@@ -119,7 +119,7 @@ mol addfile $trayectoria step $salto waitfor all molid $id_dinamica
 set num_frames [molinfo $id_dinamica get numframes]
 
 # 
-::residence_time::tiempo_residencia $solvent_sites_files $id_dinamica
+::residence_time::tiempo_residencia $solvent_sites_files $id_dinamica $binding_site
 
 
 file delete -force $foldname
