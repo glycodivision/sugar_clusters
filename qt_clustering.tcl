@@ -59,7 +59,7 @@ proc ::qt_clustering::clusterizar { distcut ncut pdb_overlap } {
 		
 		#set cantidad_puntos [ $pfpelements num ]
  		
-		set cantidad_puntos [ $puntos num ]
+		set cantidad_puntos [ $punto num ]
 		
 		if { $cantidad_puntos > $ncut } {
 			lappend lista_precluster [ list $atomo $cantidad_puntos ]
