@@ -1,5 +1,7 @@
-set dir [lindex $argv 2]
-foreach src [list solvent.tcl qt_clustering.tcl overlap.tcl parser.tcl] {
+#set dir [lindex $argv 2]
+set dir "/home/glyco/Dropbox/git-projects/sugar_clusters/sugar_clusters"
+
+foreach src [list solvent.tcl qt_clustering.tcl overlap.tcl parser.tcl residence_time.tcl ] {
 	source "$dir/$src"
 }
 
@@ -65,6 +67,7 @@ if { $aguas == "TRUE" 	} {
 	set lista_pruebas [list $cosolvent_mol_prueba $cosolvent_atoms_probe ]
 }
 puts "llegue a solapamiento"
+
 overlap::solapamiento_dinamica $id_dinamica $id_referencia 1 $binding_site $lista_pruebas
 
 mol delete $id_dinamica
@@ -113,7 +116,7 @@ set step 10
 set id_referencia	[mol new $referencia autobonds off ]
 
 # abro topologia y agrego dinamica
-set id_dinamica		[mol new $topologia filebonds off autobonds off]
+set id_dinamica [mol new $topologia filebonds off autobonds off]
 mol addfile $trayectoria step $salto waitfor all molid $id_dinamica
 
 set num_frames [molinfo $id_dinamica get numframes]

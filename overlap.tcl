@@ -14,8 +14,8 @@ proc ::overlap::solapamiento_dinamica { dinamica referencia salto binding_site m
 	puts $rmsd_out "Frame;RMSD"
 
 	
-	set reference	[atomselect $referencia "$binding_site" frame 0]
-	set compare 	[atomselect $dinamica "$binding_site" ] 
+	set reference	[atomselect $referencia "${binding_site}" frame 0]
+	set compare 	[atomselect $dinamica "${binding_site}" ] 
 	set num_steps	[molinfo $dinamica get numframes]	
 	
 	#inicializo los archivos 
@@ -26,8 +26,15 @@ proc ::overlap::solapamiento_dinamica { dinamica referencia salto binding_site m
 		}
 	}
 
+	puts " binding $binding_site "
+
+	puts " referencia [$reference get resid ] "
+
+	puts " compare    [$compare get resid ]"
+
 	for {set frame 0} {$frame < $num_steps} {incr frame $salto } {
 
+		$compare frame $frame
         # compute the transformation
 		set trans_mat [measure fit $compare $reference]
 		# do the alignment
